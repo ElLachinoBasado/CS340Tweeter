@@ -29,6 +29,7 @@ import java.util.concurrent.Executors;
 import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.client.model.backgroundTask.GetUserTask;
 import edu.byu.cs.tweeter.client.cache.Cache;
+import edu.byu.cs.tweeter.client.model.handler.GetUserHandler;
 import edu.byu.cs.tweeter.client.presenter.GetFollowingPresenter;
 import edu.byu.cs.tweeter.client.view.main.MainActivity;
 import edu.byu.cs.tweeter.model.domain.User;
@@ -107,6 +108,13 @@ public class FollowingFragment extends Fragment implements GetFollowingPresenter
         followingRecyclerViewAdapter.addItems(followees);
     }
 
+    @Override
+    public void handleFollowingSuccess(User user) {
+        Intent intent = new Intent(getContext(), MainActivity.class);
+        intent.putExtra(MainActivity.CURRENT_USER_KEY, user);
+        startActivity(intent);
+    }
+
     /**
      * The ViewHolder for the RecyclerView that displays the Following data.
      */
@@ -131,11 +139,7 @@ public class FollowingFragment extends Fragment implements GetFollowingPresenter
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    GetUserTask getUserTask = new GetUserTask(Cache.getInstance().getCurrUserAuthToken(),
-                            userAlias.getText().toString(), new GetUserHandler());
-                    ExecutorService executor = Executors.newSingleThreadExecutor();
-                    executor.execute(getUserTask);
-                    Toast.makeText(getContext(), "Getting user's profile...", Toast.LENGTH_LONG).show();
+                    presenter.loadUsers(userAlias.toString());
                 }
             });
         }
@@ -149,34 +153,6 @@ public class FollowingFragment extends Fragment implements GetFollowingPresenter
             userAlias.setText(user.getAlias());
             userName.setText(user.getName());
             Picasso.get().load(user.getImageUrl()).into(userImage);
-        }
-
-        /**
-         * Message handler (i.e., observer) for GetUserTask.
-         */
-        private class GetUserHandler extends Handler {
-
-            public GetUserHandler() {
-                super(Looper.getMainLooper());
-            }
-
-            @Override
-            public void handleMessage(@NonNull Message msg) {
-                boolean success = msg.getData().getBoolean(GetUserTask.SUCCESS_KEY);
-                if (success) {
-                    User user = (User) msg.getData().getSerializable(GetUserTask.USER_KEY);
-
-                    Intent intent = new Intent(getContext(), MainActivity.class);
-                    intent.putExtra(MainActivity.CURRENT_USER_KEY, user);
-                    startActivity(intent);
-                } else if (msg.getData().containsKey(GetUserTask.MESSAGE_KEY)) {
-                    String message = msg.getData().getString(GetUserTask.MESSAGE_KEY);
-                    Toast.makeText(getContext(), "Failed to get user's profile: " + message, Toast.LENGTH_LONG).show();
-                } else if (msg.getData().containsKey(GetUserTask.EXCEPTION_KEY)) {
-                    Exception ex = (Exception) msg.getData().getSerializable(GetUserTask.EXCEPTION_KEY);
-                    Toast.makeText(getContext(), "Failed to get user's profile because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            }
         }
     }
 

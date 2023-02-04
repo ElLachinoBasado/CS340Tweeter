@@ -14,8 +14,8 @@ import edu.byu.cs.tweeter.model.domain.User;
 
 public class LoginHandler extends Handler {
 
-    UserService.LoginObserver observer;
-    public LoginHandler(UserService.LoginObserver observer) {
+    UserService.Observer observer;
+    public LoginHandler(UserService.Observer observer) {
         super(Looper.getMainLooper());
         this.observer = observer;
     }
