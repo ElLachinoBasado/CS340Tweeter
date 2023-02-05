@@ -54,6 +54,7 @@ public class GetFollowingPresenter {
     public GetFollowingPresenter(View view) {
         this.view = view;
         followService = new FollowService();
+        userService = new UserService();
     }
     public void loadMoreItems(User user) {
         if (!isLoading && hasMorePages) {   // This guard is important for avoiding a race condition in the scrolling code.

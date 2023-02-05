@@ -11,6 +11,7 @@ import edu.byu.cs.tweeter.client.model.backgroundTask.LoginTask;
 import edu.byu.cs.tweeter.client.model.handler.GetUserHandler;
 import edu.byu.cs.tweeter.client.model.handler.LoginHandler;
 import edu.byu.cs.tweeter.client.presenter.GetFollowingPresenter;
+import edu.byu.cs.tweeter.client.view.main.followers.FollowersFragment;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
