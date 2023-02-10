@@ -16,8 +16,6 @@ import edu.byu.cs.tweeter.model.domain.User;
  * Message handler (i.e., observer) for GetFollowingTask.
  */
 public class GetFollowingHandler extends Handler {
-
-
     private FollowService.Observer observer;
     public GetFollowingHandler(FollowService.Observer observer) {
         super(Looper.getMainLooper());
